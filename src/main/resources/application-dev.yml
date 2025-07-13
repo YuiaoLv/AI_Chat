@@ -1,0 +1,11 @@
+sky:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    host: localhost
+    port: 3306
+    database: ai_chat
+    username: root
+    password: 050228
+ai:
+  openai:
+    api-key: sk-c3bd456eb725447baeea3bc556228656
