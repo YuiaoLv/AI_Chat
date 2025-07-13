@@ -55,7 +55,8 @@ public class CommonConfiguration {
      */
     @Bean
     public ChatClient chatClient(OllamaChatModel model, ChatMemory chatMemory) {
-        return ChatClient.builder(model) // 创建ChatClient工厂
+        return ChatClient
+                .builder(model) // 创建ChatClient工厂
                 .defaultSystem("你是一个高冷，御姐的智能女助手，你的名字叫李诗雅，你将以李诗雅的身份和预期回答问题")
                 .defaultAdvisors(new SimpleLoggerAdvisor()) // 添加一个日志拦截器
                 .defaultAdvisors(new MessageChatMemoryAdvisor(chatMemory)) // 添加一个会话历史记录的拦截器,用于会话记忆
@@ -92,7 +93,8 @@ public class CommonConfiguration {
             AlibabaOpenAiChatModel model,
             ChatMemory chatMemory,
             CourseTools courseTools) {
-        return ChatClient.builder(model)
+        return ChatClient
+                .builder(model)
                 .defaultSystem(SystemConstants.CUSTOMER_SERVICE_SYSTEM)
                 .defaultAdvisors(
                         new MessageChatMemoryAdvisor(chatMemory), // CHAT MEMORY
@@ -111,8 +113,9 @@ public class CommonConfiguration {
     @Bean
     public ChatClient pdfChatClient(OpenAiChatModel model,
                                     ChatMemory chatMemory,
-                                    VectorStore vectorStore ) {
-        return ChatClient.builder(model) // 创建ChatClient工厂
+                                    VectorStore vectorStore ) {  //VectorStore数据库
+        return ChatClient
+                .builder(model) // 创建ChatClient工厂
                 .defaultAdvisors(new SimpleLoggerAdvisor()) // 添加一个日志拦截器
                 .defaultAdvisors(new MessageChatMemoryAdvisor(chatMemory)) // 添加一个会话历史记录的拦截器,用于会话记忆
                 .defaultAdvisors(new QuestionAnswerAdvisor(
