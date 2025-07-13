@@ -16,4 +16,8 @@ public interface ChatHistoryMapper {
 
     @Select("select chat_id from ai_chat.chat_history where type = #{type} order by create_time desc")
     List<String> getChatIdsByType(String type);
+
+
+    @Select("select count(*) from ai_chat.chat_history where type = #{type} and chat_id = #{chatId}")
+    int getId(String type, String chatId);
 }

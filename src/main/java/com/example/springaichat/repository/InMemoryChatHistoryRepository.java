@@ -26,6 +26,7 @@ public class InMemoryChatHistoryRepository implements ChatHistoryRepository{
     @Override
     public void save(String type, String chatId) {
         // 创建ChatHistory对象
+        if(chatHistoryMapper.getId(type,chatId)!=0) return;
         ChatHistory chatHistory = new ChatHistory();
         chatHistory.setType(type);
         chatHistory.setChatId(chatId);
