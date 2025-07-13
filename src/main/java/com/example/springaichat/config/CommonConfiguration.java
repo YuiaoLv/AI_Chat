@@ -1,6 +1,7 @@
 package com.example.springaichat.config;
 
 import com.example.springaichat.constants.SystemConstants;
+import com.example.springaichat.entity.po.InSqlChatMemory;
 import com.example.springaichat.model.AlibabaOpenAiChatModel;
 import com.example.springaichat.tools.CourseTools;
 import io.micrometer.observation.ObservationRegistry;
@@ -133,7 +134,7 @@ public class CommonConfiguration {
      */
     @Bean
     public ChatMemory chatMemory() {
-        return new InMemoryChatMemory();
+        return new InSqlChatMemory();
     }
 
     @Bean
