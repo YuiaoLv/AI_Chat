@@ -51,33 +51,34 @@ public class CommonConfiguration {
     /**
      * 对话机器人的ChatClient
      * @param model
-     * @param chatMemory
+
      * @return
      */
     @Bean
-    public ChatClient chatClient(OllamaChatModel model, ChatMemory chatMemory) {
+    public ChatClient chatClient(OllamaChatModel model, ChatMemory defaultChatMemory) {
         return ChatClient
                 .builder(model) // 创建ChatClient工厂
                 .defaultSystem("你是一个高冷，御姐的智能女助手，你的名字叫李诗雅，你将以李诗雅的身份和预期回答问题")
                 .defaultAdvisors(new SimpleLoggerAdvisor()) // 添加一个日志拦截器
-                .defaultAdvisors(new MessageChatMemoryAdvisor(chatMemory)) // 添加一个会话历史记录的拦截器,用于会话记忆
+                .defaultAdvisors(new MessageChatMemoryAdvisor(defaultChatMemory)) // 添加一个会话历史记录的拦截器,用于会话记忆
                 .build(); // 构建ChatClient实例
     }
 
+    
     /**
-     * 哄哄模拟器的ChatClient
+     * 游戏功能的ChatClient
      * @param model
-     * @param chatMemory
+     * @param gameChatMemory
      * @return
      */
     @Bean
-    public ChatClient gameChatClient(OpenAiChatModel model, ChatMemory chatMemory) {
+    public ChatClient gameChatClient(OpenAiChatModel model, ChatMemory gameChatMemory) {
         return ChatClient
                 .builder(model)
                 .defaultSystem(SystemConstants.GAME_SYSTEM_PROMPT)
                 .defaultAdvisors(
                         new SimpleLoggerAdvisor(),
-                        new MessageChatMemoryAdvisor(chatMemory)
+                        new MessageChatMemoryAdvisor(gameChatMemory)
                 )
                 .build();
     }
@@ -85,20 +86,19 @@ public class CommonConfiguration {
     /**
      *  服务端客服的ChatClient
      * @param model
-     * @param chatMemory
      * @param courseTools
      * @return
      */
     @Bean
     public ChatClient serviceChatClient(
             AlibabaOpenAiChatModel model,
-            ChatMemory chatMemory,
+            ChatMemory defaultChatMemory,
             CourseTools courseTools) {
         return ChatClient
                 .builder(model)
                 .defaultSystem(SystemConstants.CUSTOMER_SERVICE_SYSTEM)
                 .defaultAdvisors(
-                        new MessageChatMemoryAdvisor(chatMemory), // CHAT MEMORY
+                        new MessageChatMemoryAdvisor(defaultChatMemory), // CHAT MEMORY
                         new SimpleLoggerAdvisor()) //
                 .defaultTools(courseTools)  // 定义的Tools
                 .build();
@@ -106,19 +106,18 @@ public class CommonConfiguration {
 
     /**
      *  PDF查询的ChatClient
-     * @param model // 使用的模型
-     * @param chatMemory  // 会话历史记录
+     * @param model // 使用的模型// 会话历史记录
      * @param vectorStore // 向量库
      * @return
      */
     @Bean
     public ChatClient pdfChatClient(OpenAiChatModel model,
-                                    ChatMemory chatMemory,
+                                    ChatMemory pdfChatMemory,
                                     VectorStore vectorStore ) {  //VectorStore数据库
         return ChatClient
                 .builder(model) // 创建ChatClient工厂
                 .defaultAdvisors(new SimpleLoggerAdvisor()) // 添加一个日志拦截器
-                .defaultAdvisors(new MessageChatMemoryAdvisor(chatMemory)) // 添加一个会话历史记录的拦截器,用于会话记忆
+                .defaultAdvisors(new MessageChatMemoryAdvisor(pdfChatMemory)) // 添加一个会话历史记录的拦截器,用于会话记忆
                 .defaultAdvisors(new QuestionAnswerAdvisor(
                         vectorStore, // 向量库
                         SearchRequest.builder() // 向量检索的请求参数
@@ -128,14 +127,7 @@ public class CommonConfiguration {
                 ))
                 .build(); // 构建ChatClient实例
     }
-    /**
-     * 创建一个默认的ChatMemory，用于存储对话历史记录
-     * @return
-     */
-    @Bean
-    public ChatMemory chatMemory() {
-        return new InSqlChatMemory();
-    }
+    // ChatMemory的bean已移至ChatMemoryConfig类中
 
     @Bean
     public AlibabaOpenAiChatModel alibabaOpenAiChatModel(OpenAiConnectionProperties commonProperties, OpenAiChatProperties chatProperties, ObjectProvider<RestClient.Builder> restClientBuilderProvider, ObjectProvider<WebClient.Builder> webClientBuilderProvider, ToolCallingManager toolCallingManager, RetryTemplate retryTemplate, ResponseErrorHandler responseErrorHandler, ObjectProvider<ObservationRegistry> observationRegistry, ObjectProvider<ChatModelObservationConvention> observationConvention) {

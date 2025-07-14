@@ -3,6 +3,7 @@ package com.example.springaichat.controller;
 import com.example.springaichat.repository.ChatHistoryRepository;
 import jakarta.annotation.Resource;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,6 +18,7 @@ public class ChatController {
     private  ChatClient chatClient;
     // 请求方式和路径不要改动，将来要与前端联调
     @Resource
+    @Qualifier("inSqlChatHistoryRepository")
     private ChatHistoryRepository chatHistoryRepository;
 
 /*    *//**

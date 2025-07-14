@@ -3,6 +3,7 @@ package com.example.springaichat.controller;
 import com.example.springaichat.repository.ChatHistoryRepository;
 import jakarta.annotation.Resource;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
@@ -15,6 +16,7 @@ public class CustomerServiceController {
     @Resource()
     private  ChatClient serviceChatClient;
     @Resource
+    @Qualifier("inSqlChatHistoryRepository")
     private ChatHistoryRepository chatHistoryRepository;
 
     @RequestMapping(value = "/service", produces = "text/html;charset=utf-8")

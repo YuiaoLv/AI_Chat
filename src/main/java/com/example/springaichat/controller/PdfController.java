@@ -13,6 +13,7 @@ import org.springframework.ai.reader.pdf.config.PdfDocumentReaderConfig;
 import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
@@ -42,6 +43,7 @@ public class PdfController {
     private ChatClient pdfChatClient;
 
     @jakarta.annotation.Resource
+    @Qualifier("inSqlChatHistoryRepository")
     private ChatHistoryRepository chatHistoryRepository;
 
     /**
