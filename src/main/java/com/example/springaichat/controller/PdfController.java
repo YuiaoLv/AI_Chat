@@ -43,7 +43,7 @@ public class PdfController {
     private ChatClient pdfChatClient;
 
     @jakarta.annotation.Resource
-    @Qualifier("inSqlChatHistoryRepository")
+    @Qualifier("inMemoryChatHistoryRepository")
     private ChatHistoryRepository chatHistoryRepository;
 
     /**

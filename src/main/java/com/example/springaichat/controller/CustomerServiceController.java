@@ -3,6 +3,7 @@ package com.example.springaichat.controller;
 import com.example.springaichat.repository.ChatHistoryRepository;
 import jakarta.annotation.Resource;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,7 +16,7 @@ import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvis
 public class CustomerServiceController {
     @Resource()
     private  ChatClient serviceChatClient;
-    @Resource
+    @Autowired
     @Qualifier("inSqlChatHistoryRepository")
     private ChatHistoryRepository chatHistoryRepository;
 

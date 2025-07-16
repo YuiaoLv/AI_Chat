@@ -38,6 +38,9 @@ public class InMemoryChatHistoryRepository implements ChatHistoryRepository{
 
     @Override
     public void delete(String type, String chatId) {
-        return;
+        List<String> chatIds = chatHistory.get(type);
+        if (chatIds != null) {
+            chatIds.remove(chatId);
+        }
     }
 }

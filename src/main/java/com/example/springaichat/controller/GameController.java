@@ -1,7 +1,10 @@
 package com.example.springaichat.controller;
 
+import com.example.springaichat.repository.ChatHistoryRepository;
 import jakarta.annotation.Resource;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
@@ -14,6 +17,7 @@ public class GameController {
 
     @Resource
     private ChatClient gameChatClient;
+
 
     @RequestMapping(value = "/game", produces = "text/html;charset=utf-8")
     public Flux<String> chat(String prompt, String chatId){
