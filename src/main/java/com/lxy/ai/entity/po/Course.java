@@ -58,7 +58,7 @@ public class Course implements Serializable {
     /**
      * 上课时间
      */
-    private Integer classDay;
+    private String classDay;
 
 
 }
