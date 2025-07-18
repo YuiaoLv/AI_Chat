@@ -28,6 +28,6 @@ public interface ChatHistoryMapper {
      * @param type
      * @return
      */
-    @Select("SELECT chat_id FROM ai_chat.chat_history WHERE type = #{type} order by create_time")
+    @Select("SELECT chat_id FROM ai_chat.chat_history WHERE type = #{type} order by create_time desc")
     List<String> selectChatIdsByType(String type);
 }

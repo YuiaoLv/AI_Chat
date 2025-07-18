@@ -48,14 +48,13 @@ public class CourseTools {
         return wrapper.list();
     }
 
-    @Tool(description = "根据条件查询校区")
-    public List<Course> queryCampus(@ToolParam(required = false, description = "校区名称") String name) {
+    @Tool(description = "根据校区名称查询当前校区的所有课程")
+    public List<Course> queryCourseByCampusName(@ToolParam(required = false, description = "校区名称") String campusName) {
         return courseService.query()
                 .exists(
                         "SELECT 1 FROM school s " +
                                 "JOIN contains c ON s.id = c.school_id " +
-                                "WHERE s.name LIKE CONCAT('%', {0}, '%') AND c.course_id = course.id",
-                        name
+                                "WHERE s.name LIKE CONCAT('%', {0}, '%') AND c.course_id = course.id",campusName
                 ).list();
     }
 
@@ -77,6 +76,9 @@ public class CourseTools {
 
     @Tool(description = "查询符合用户年级的其它课程推荐")
     public List<Course> queryRecommendCourse(@ToolParam(description = "用户年级") Integer edu) {
+        if (edu == null) {
+            return courseService.list();
+        }
         return courseService.query()
                 .le("edu", edu)
                 .orderByDesc("credit")
@@ -93,4 +95,6 @@ public class CourseTools {
     public List<School> queryAllSchool() {
         return schoolService.list();
     }
+
+
 }
