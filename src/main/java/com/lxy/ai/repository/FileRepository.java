@@ -18,4 +18,6 @@ public interface FileRepository {
      * @return 找到的文件
      */
     Resource getFile(String chatId);
+
+    void delete(String chatId);
 }

@@ -3,6 +3,7 @@ package com.lxy.ai.controller;
 import com.lxy.ai.entity.po.InSqlChatMemory;
 import com.lxy.ai.entity.vo.MessageVO;
 import com.lxy.ai.repository.ChatHistoryRepository;
+import com.lxy.ai.repository.FileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.messages.Message;
@@ -21,6 +22,8 @@ public class ChatHistoryController {
     @Autowired
     @Qualifier("inSqlChatHistoryRepository")
     private ChatHistoryRepository chatHistoryRepository;
+
+    private final FileRepository fileRepository;
 
     @GetMapping("/{type}")
     public List<String> getChatIds(@PathVariable("type") String type) {
@@ -46,5 +49,6 @@ public class ChatHistoryController {
     public void deleteChatHistory(@PathVariable("type") String type, @PathVariable("chatId") String chatId) {
         chatHistoryRepository.delete(type, chatId);
         inSqlChatMemory.clear(chatId);
+        fileRepository.delete(chatId);
     }
 }

@@ -58,7 +58,7 @@ public class PdfController {
                 return Result.fail("保存文件失败！");
             }
             // 3.写入向量库
-            this.writeToVectorStore(file.getResource());
+//            this.writeToVectorStore(file.getResource());  优化到save方法中，避免一个文件多次写入
             return Result.success("上传文件成功！");
         } catch (Exception e) {
             log.error("Failed to upload PDF.", e);
