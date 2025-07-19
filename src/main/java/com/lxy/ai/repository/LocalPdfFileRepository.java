@@ -2,7 +2,9 @@ package com.lxy.ai.repository;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.lxy.ai.entity.po.ChatFileMapping;
+import com.lxy.ai.entity.po.ChatHistory;
 import com.lxy.ai.mapper.ChatFileMappingMapper;
+import com.lxy.ai.mapper.ChatHistoryMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.document.Document;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Repository;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -26,6 +29,8 @@ import java.util.Objects;
 public class LocalPdfFileRepository implements FileRepository {
 
     private final ChatFileMappingMapper chatFileMappingMapper;
+
+    private final ChatHistoryMapper chatHistoryMapper;
 
     private final VectorStore vectorStore;
 
@@ -48,7 +53,10 @@ public class LocalPdfFileRepository implements FileRepository {
         // 使用 LambdaQueryWrapper 通过实体类属性名查询
         LambdaQueryWrapper<ChatFileMapping> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(ChatFileMapping::getChatId, chatId);
-
+        ChatHistory chatHistory = new ChatHistory();
+        chatHistory.setChatId(chatId);
+        chatHistory.setType("pdf");
+        chatHistory.setCreateTime(LocalDateTime.now());
         // 查询是否存在记录
         ChatFileMapping existingMapping = chatFileMappingMapper.selectOne(queryWrapper);
 
@@ -58,6 +66,7 @@ public class LocalPdfFileRepository implements FileRepository {
             mapping.setChatId(chatId);
             mapping.setFileName(filename);
             chatFileMappingMapper.insert(mapping); // 插入数据库
+            chatHistoryMapper.insert(chatHistory);
         }
 
         return true;

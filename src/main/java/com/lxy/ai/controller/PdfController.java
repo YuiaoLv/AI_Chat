@@ -8,11 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
-import org.springframework.ai.document.Document;
-import org.springframework.ai.reader.ExtractedTextFormatter;
-import org.springframework.ai.reader.pdf.PagePdfDocumentReader;
-import org.springframework.ai.reader.pdf.config.PdfDocumentReaderConfig;
-import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.Resource;
@@ -25,7 +20,6 @@ import reactor.core.publisher.Flux;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 import java.util.Objects;
 
 @RestController
@@ -36,7 +30,7 @@ public class PdfController {
 
     private final FileRepository fileRepository;
 
-    private final VectorStore vectorStore;
+//    private final VectorStore vectorStore;
 
     private final ChatClient pdfChatClient;
     @Autowired
@@ -85,27 +79,27 @@ public class PdfController {
                 .body(resource);
     }
 
-    private void writeToVectorStore(Resource resource) {
-        // 1.创建PDF的读取器
-        PagePdfDocumentReader reader = new PagePdfDocumentReader(
-                resource, // 文件源
-                PdfDocumentReaderConfig.builder()
-                        .withPageExtractedTextFormatter(ExtractedTextFormatter.defaults())
-                        .withPagesPerDocument(1) // 每1页PDF作为一个Document
-                        .build()
-        );
-        // 2.读取PDF文档，拆分为Document
-        List<Document> documents = reader.read();
-        // 3.写入向量库
-        vectorStore.add(documents);
-    }
+//    private void writeToVectorStore(Resource resource) {
+//        // 1.创建PDF的读取器
+//        PagePdfDocumentReader reader = new PagePdfDocumentReader(
+//                resource, // 文件源
+//                PdfDocumentReaderConfig.builder()
+//                        .withPageExtractedTextFormatter(ExtractedTextFormatter.defaults())
+//                        .withPagesPerDocument(1) // 每1页PDF作为一个Document
+//                        .build()
+//        );
+//        // 2.读取PDF文档，拆分为Document
+//        List<Document> documents = reader.read();
+//        // 3.写入向量库
+//        vectorStore.add(documents);
+//    }
     @RequestMapping(value = "/chat", produces = "text/html;charset=utf-8")
     public Flux<String> chat(String prompt, String chatId) {
+        chatHistoryRepository.save("pdf",chatId);
         Resource file = fileRepository.getFile(chatId);
         if(!file.exists()){
             throw new RuntimeException("请先上传文件！");
         }
-        chatHistoryRepository.save("pdf",chatId);
         return pdfChatClient.prompt()
                 .user(prompt)
                 .advisors(a->a.param(ChatMemory.CONVERSATION_ID,chatId))
