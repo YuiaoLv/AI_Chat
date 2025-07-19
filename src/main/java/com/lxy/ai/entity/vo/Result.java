@@ -1,8 +1,10 @@
 package com.lxy.ai.entity.vo;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class Result {
     private Integer ok;
     private String msg;
@@ -11,7 +13,7 @@ public class Result {
         this.ok = ok;
         this.msg = msg;
     }
-    public static Result ok(String msg) {
+    public static Result success(String msg) {
         return new Result(1, msg);
     }
     public static Result fail(String msg) {
