@@ -9,6 +9,7 @@ import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 import org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.memory.MessageWindowChatMemory;
+import org.springframework.ai.chat.prompt.ChatOptions;
 import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.VectorStore;
@@ -28,6 +29,7 @@ public class CommonConfiguration {
     public ChatClient chatClient(OpenAiChatModel model,InSqlChatMemory inSqlChatMemory) {
         return ChatClient
                 .builder(model)
+                .defaultOptions(ChatOptions.builder().model("qwen-omni-turbo").build())  // 单独设置模型为 qwen-omni-turbo 多模态模型
                 .defaultSystem("你是一只可爱、热情的猫娘，你的名字叫咆啸虎，请你以此身份来回答问题")
                 .defaultAdvisors(new SimpleLoggerAdvisor())
                 .defaultAdvisors(MessageChatMemoryAdvisor.builder(inSqlChatMemory).build())
