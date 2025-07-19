@@ -1,19 +1,26 @@
 package com.lxy.ai.controller;
 
 import com.lxy.ai.entity.vo.Result;
+import com.lxy.ai.repository.ChatHistoryRepository;
 import com.lxy.ai.repository.FileRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvisor;
+import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.reader.ExtractedTextFormatter;
 import org.springframework.ai.reader.pdf.PagePdfDocumentReader;
 import org.springframework.ai.reader.pdf.config.PdfDocumentReaderConfig;
 import org.springframework.ai.vectorstore.VectorStore;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import reactor.core.publisher.Flux;
 
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -30,6 +37,11 @@ public class PdfController {
     private final FileRepository fileRepository;
 
     private final VectorStore vectorStore;
+
+    private final ChatClient pdfChatClient;
+    @Autowired
+    @Qualifier("inSqlChatHistoryRepository")
+    private ChatHistoryRepository chatHistoryRepository;
     /**
      * 文件上传
      */
@@ -86,5 +98,19 @@ public class PdfController {
         List<Document> documents = reader.read();
         // 3.写入向量库
         vectorStore.add(documents);
+    }
+    @RequestMapping(value = "/chat", produces = "text/html;charset=utf-8")
+    public Flux<String> chat(String prompt, String chatId) {
+        Resource file = fileRepository.getFile(chatId);
+        if(!file.exists()){
+            throw new RuntimeException("请先上传文件！");
+        }
+        chatHistoryRepository.save("pdf",chatId);
+        return pdfChatClient.prompt()
+                .user(prompt)
+                .advisors(a->a.param(ChatMemory.CONVERSATION_ID,chatId))
+                .advisors(a -> a.param(QuestionAnswerAdvisor.FILTER_EXPRESSION, "file_name == '"+file.getFilename()+"'"))
+                .stream()
+                .content();
     }
 }
